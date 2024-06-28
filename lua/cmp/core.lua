@@ -276,6 +276,11 @@ core.complete = function(self, ctx)
     return
   end
 
+  -- temporary workaround
+  if config.get().completion.keyword_length > 1 and self.view:visible() then
+    return
+  end
+
   self:set_context(ctx)
 
   -- Invoke completion sources.
