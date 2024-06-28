@@ -25,6 +25,10 @@ highlight.inherit = function(name, source, settings)
       settings[key] = v == '' and 'NONE' or v
     end
   end
+  local hl = vim.api.nvim_get_hl(0, {name = source})
+  if hl.link then
+    settings.link = hl.link
+  end
   vim.api.nvim_set_hl(0, name, settings)
 end
 
