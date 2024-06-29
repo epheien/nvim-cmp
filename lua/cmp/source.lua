@@ -301,7 +301,11 @@ source.complete = function(self, ctx, callback)
         }
       end
     else
-      self:reset() -- Should clear current completion if the TriggerKind isn't TriggerCharacter or Manual and keyword length does not enough.
+      if not require('cmp').visible() then
+        -- Should clear current completion if the TriggerKind isn't TriggerCharacter or Manual
+        -- and keyword length does not enough, except pumvisible.
+        self:reset()
+      end
     end
   else
     self:reset() -- Should clear current completion if ContextReason is TriggerOnly and the triggerCharacter isn't matched

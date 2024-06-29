@@ -143,7 +143,6 @@ view.open = function(self, ctx, sources)
 
   -- complete_done.
   if #entries == 0 then
-    -- FIXME: completion.keyword_length > 1 时 thread.j| 在这里关闭了
     self:close()
   end
   return #entries > 0
