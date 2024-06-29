@@ -265,8 +265,9 @@ end
 ---Invoke completion
 ---@param ctx cmp.Context
 ---@param callback function
+---@param pumvisible? boolean
 ---@return boolean? Return true if not trigger completion.
-source.complete = function(self, ctx, callback)
+source.complete = function(self, ctx, callback, pumvisible)
   local offset = ctx:get_offset(self:get_keyword_pattern())
 
   -- NOTE: This implementation is nvim-cmp specific.
@@ -301,7 +302,7 @@ source.complete = function(self, ctx, callback)
         }
       end
     else
-      if not require('cmp').visible() then
+      if not pumvisible then
         -- Should clear current completion if the TriggerKind isn't TriggerCharacter or Manual
         -- and keyword length does not enough, except pumvisible.
         self:reset()
