@@ -157,7 +157,15 @@ window.update = function(self)
 
     -- Draw the scrollbar thumb
     local thumb_height = math.floor(info.inner_height * (info.inner_height / self:get_content_height()))
-    local thumb_offset = math.floor(info.inner_height * (vim.fn.getwininfo(self.win)[1].topline / self:get_content_height()))
+    local topline = vim.fn.getwininfo(self.win)[1].topline
+    local scroll_ratio = topline / (self:get_content_height() - info.inner_height + 1)
+    -- row grid start from 0 on nvim-0.10
+    local thumb_offset_raw = (info.inner_height - thumb_height) * scroll_ratio
+    -- round half if topline > 1
+    local thumb_offset = math.floor(thumb_offset_raw)
+    if topline > 1 and thumb_offset_raw + 0.5 >= thumb_offset + 1 then
+      thumb_offset = thumb_offset + 1
+    end
 
     local style = {
       relative = 'editor',
