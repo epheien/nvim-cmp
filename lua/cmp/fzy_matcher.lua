@@ -1,3 +1,4 @@
+local char = require('cmp.utils.char')
 local fzy = require('cmp.algos.fzy')
 
 local M = {}
@@ -53,9 +54,37 @@ end
 ---Match entry
 ---@param input string
 ---@param word string
----@param option? { synonyms: string[], disallow_fullfuzzy_matching: boolean, disallow_fuzzy_matching: boolean, disallow_partial_fuzzy_matching: boolean, disallow_partial_matching: boolean, disallow_prefix_unmatching: boolean, disallow_symbol_nonprefix_matching: boolean }
+---@param option? table reference option of _match()
 ---@return integer, table
 M.match = function(input, word, option)
+  option = option or {}
+
+  -- Empty input
+  if #input == 0 then
+    return 1, {}
+  end
+
+  -- Ignore if input is long than word
+  if #input > #word then
+    return 0, {}
+  end
+
+  -- Check prefix matching.
+  if option.disallow_prefix_unmatching then
+    if not char.match(string.byte(input, 1), string.byte(word, 1)) then
+      return 0, {}
+    end
+  end
+
+  return M._match(input, word, option)
+end
+
+---Match entry
+---@param input string
+---@param word string
+---@param option? { synonyms: string[], disallow_fullfuzzy_matching: boolean, disallow_fuzzy_matching: boolean, disallow_partial_fuzzy_matching: boolean, disallow_partial_matching: boolean, disallow_prefix_unmatching: boolean, disallow_symbol_nonprefix_matching: boolean }
+---@return integer, table
+M._match = function(input, word, option)
   if option and option.disallow_fullfuzzy_matching then
     return 0, {}
   end

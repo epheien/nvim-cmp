@@ -53,6 +53,10 @@ return function()
       end,
     },
 
+    matcher = {
+      name = 'default',
+    },
+
     matching = {
       disallow_fuzzy_matching = false,
       disallow_fullfuzzy_matching = false,
