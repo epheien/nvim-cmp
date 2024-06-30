@@ -157,6 +157,7 @@ window.update = function(self)
 
     -- Draw the scrollbar thumb
     local thumb_height = math.floor(info.inner_height * (info.inner_height / self:get_content_height()))
+    thumb_height = math.max(1, thumb_height)
     local topline = vim.fn.getwininfo(self.win)[1].topline
     local scroll_ratio = topline / (self:get_content_height() - info.inner_height + 1)
     -- row grid start from 0 on nvim-0.10
@@ -171,7 +172,7 @@ window.update = function(self)
       relative = 'editor',
       style = 'minimal',
       width = 1,
-      height = math.max(1, thumb_height),
+      height = thumb_height,
       row = info.row + thumb_offset + (info.border_info.visible and info.border_info.top or 0),
       col = info.col + info.width - 1, -- info.col was already added scrollbar offset.
       zindex = (self.style.zindex and (self.style.zindex + 2) or 2),
