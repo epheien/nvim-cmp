@@ -6,6 +6,7 @@ local snippet = require('cmp.utils.snippet')
 local config = require('cmp.config')
 local types = require('cmp.types')
 local matcher = require('cmp.matcher')
+local fzy_matcher = require('cmp.fzy_matcher')
 
 ---@class cmp.Entry
 ---@field public id integer
@@ -13,6 +14,7 @@ local matcher = require('cmp.matcher')
 ---@field public match_cache cmp.Cache
 ---@field public score integer
 ---@field public exact boolean
+---@field public matcher cmp.matcher|cmp.fzy_matcher
 ---@field public matches table
 ---@field public context cmp.Context
 ---@field public source cmp.Source
@@ -47,6 +49,7 @@ entry.new = function(ctx, source, completion_item, item_defaults)
   self.match_cache = cache.new()
   self.score = 0
   self.exact = false
+  self.matcher = config.get().matcher.name == 'default' and matcher or fzy_matcher
   self.matches = {}
   self.context = ctx
   self.source = source
@@ -428,7 +431,7 @@ entry._match = function(self, input, matching_config)
 
   filter_text = self.filter_text
   checked[filter_text] = true
-  score, matches = matcher.match(input, filter_text, option)
+  score, matches = self.matcher.match(input, filter_text, option)
 
   -- Support the language server that doesn't respect VSCode's behaviors.
   if score == 0 then
