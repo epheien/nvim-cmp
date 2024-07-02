@@ -9,6 +9,7 @@ local misc = require('cmp.utils.misc')
 local api = require('cmp.utils.api')
 
 ---@class cmp.CustomEntriesView
+---@field public name string
 ---@field private offset integer
 ---@field private entries_win cmp.Window
 ---@field private active boolean
@@ -20,6 +21,7 @@ wildmenu_entries_view.ns = vim.api.nvim_create_namespace('cmp.view.statusline_en
 
 wildmenu_entries_view.new = function()
   local self = setmetatable({}, { __index = wildmenu_entries_view })
+  self.name = 'wildmenu_entries_view'
   self.event = event.new()
   self.offset = -1
   self.active = false

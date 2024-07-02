@@ -11,6 +11,7 @@ local api = require('cmp.utils.api')
 local DEFAULT_HEIGHT = 10 -- @see https://github.com/vim/vim/blob/master/src/popupmenu.c#L45
 
 ---@class cmp.CustomEntriesView
+---@field public name string
 ---@field private entries_win cmp.Window
 ---@field private offset integer
 ---@field private active boolean
@@ -24,6 +25,7 @@ custom_entries_view.ns = vim.api.nvim_create_namespace('cmp.view.custom_entries_
 custom_entries_view.new = function()
   local self = setmetatable({}, { __index = custom_entries_view })
 
+  self.name = 'custom_entries_view'
   self.entries_win = window.new()
   self.entries_win:option('conceallevel', 2)
   self.entries_win:option('concealcursor', 'n')

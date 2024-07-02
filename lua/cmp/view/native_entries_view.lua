@@ -7,6 +7,7 @@ local config = require('cmp.config')
 local api = require('cmp.utils.api')
 
 ---@class cmp.NativeEntriesView
+---@field public name string
 ---@field private offset integer
 ---@field private items vim.CompletedItem
 ---@field private entries cmp.Entry[]
@@ -16,6 +17,7 @@ local native_entries_view = {}
 
 native_entries_view.new = function()
   local self = setmetatable({}, { __index = native_entries_view })
+  self.name = 'native_entries_view'
   self.event = event.new()
   self.offset = -1
   self.items = {}
