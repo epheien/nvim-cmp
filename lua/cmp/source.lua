@@ -302,7 +302,7 @@ source.complete = function(self, ctx, callback, pumvisible)
         }
       end
     else
-      if not pumvisible then
+      if not (pumvisible and self:get_keyword_length() > 1) then
         -- Should clear current completion if the TriggerKind isn't TriggerCharacter or Manual
         -- and keyword length does not enough, except pumvisible.
         self:reset()
@@ -316,6 +316,8 @@ source.complete = function(self, ctx, callback, pumvisible)
   if not completion_context then
     return
   end
+
+  completion_context.pumvisible = pumvisible
 
   if completion_context.triggerKind == types.lsp.CompletionTriggerKind.TriggerCharacter then
     self.is_triggered_by_symbol = char.is_symbol(string.byte(completion_context.triggerCharacter))
