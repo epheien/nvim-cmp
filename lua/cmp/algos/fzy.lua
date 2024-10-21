@@ -8,11 +8,11 @@
 -- > using acronyms or different parts of the path." - J Hawthorn
 
 local has_path, Path
-has_path, Path = pcall(require, "plenary.path")
+has_path, Path = pcall(require, 'plenary.path')
 if not has_path then
   Path = {
     path = {
-      separator = "/",
+      separator = '/',
     },
   }
 end
@@ -49,11 +49,11 @@ function fzy.has_match(needle, haystack)
 end
 
 local function is_lower(c)
-  return c:match "%l"
+  return c:match('%l')
 end
 
 local function is_upper(c)
-  return c:match "%u"
+  return c:match('%u')
 end
 
 local function precompute_bonus(haystack)
@@ -64,9 +64,9 @@ local function precompute_bonus(haystack)
     local this_char = haystack:sub(i, i)
     if last_char == Path.path.sep then
       match_bonus[i] = SCORE_MATCH_SLASH
-    elseif last_char == "-" or last_char == "_" or last_char == " " then
+    elseif last_char == '-' or last_char == '_' or last_char == ' ' then
       match_bonus[i] = SCORE_MATCH_WORD
-    elseif last_char == "." then
+    elseif last_char == '.' then
       match_bonus[i] = SCORE_MATCH_DOT
     elseif is_lower(last_char) and is_upper(this_char) then
       match_bonus[i] = SCORE_MATCH_CAPITAL
