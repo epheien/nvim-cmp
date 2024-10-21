@@ -276,8 +276,6 @@ core.complete = function(self, ctx)
     return
   end
 
-  local visible = self.view:visible();
-
   self:set_context(ctx)
 
   -- Invoke completion sources.
@@ -298,11 +296,11 @@ core.complete = function(self, ctx)
         end
       end
     end)(s)
-    s:complete(ctx, callback, visible)
+    s:complete(ctx, callback)
   end
 
   if not self.view:get_active_entry() then
-    self.filter.timeout = visible and config.get().performance.throttle or 1
+    self.filter.timeout = self.view:visible() and config.get().performance.throttle or 1
     self:filter()
   end
 end
