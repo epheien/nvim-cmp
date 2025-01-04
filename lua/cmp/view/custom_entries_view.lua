@@ -17,6 +17,8 @@ local DEFAULT_HEIGHT = 10 -- @see https://github.com/vim/vim/blob/master/src/pop
 ---@field private entries cmp.Entry[]
 ---@field private column_width any
 ---@field public event cmp.Event
+---@field inserted_cursor integer[2]
+---@field inserted_line string
 local custom_entries_view = {}
 
 custom_entries_view.ns = vim.api.nvim_create_namespace('cmp.view.custom_entries_view')
@@ -43,6 +45,8 @@ custom_entries_view.new = function()
   self.active = false
   self.entries = {}
   self.bottom_up = false
+  self.inserted_cursor = { -1, -1 }
+  self.inserted_line = ''
 
   autocmd.subscribe(
     'CompleteChanged',
@@ -254,7 +258,13 @@ end
 
 custom_entries_view.abort = function(self)
   if self.prefix then
-    self:_insert(self.prefix)
+    if api.is_cmdline_mode() then
+      if api.get_cursor()[2] == self.inserted_cursor[2] and self.inserted_line == api.get_current_line() then
+        self:_insert(self.prefix)
+      end
+    else
+      self:_insert(self.prefix)
+    end
   end
   feedkeys.call('', 'n', function()
     self:close()
@@ -433,6 +443,8 @@ custom_entries_view._select = function(self, cursor, option)
 
   if is_insert then
     self:_insert(self.entries[cursor] and self.entries[cursor]:get_vim_item(self.offset).word or self.prefix)
+    self.inserted_cursor = api.get_cursor()
+    self.inserted_line = api.get_current_line()
   end
 
   self.entries_win:update()
