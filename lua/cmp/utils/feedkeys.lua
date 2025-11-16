@@ -46,7 +46,7 @@ feedkeys.run = function(id)
   if feedkeys.call.callbacks[id] then
     local ok, err = pcall(feedkeys.call.callbacks[id])
     if not ok then
-      vim.notify(err, vim.log.levels.ERROR)
+      vim.api.nvim_echo({ { err } }, true, { err = true })
     end
     feedkeys.call.callbacks[id] = nil
   end

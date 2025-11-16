@@ -76,7 +76,7 @@ async.throttle = function(fn, timeout)
               _async = nil
               self.running = false
               if error and error ~= 'abort' then
-                vim.notify(error, vim.log.levels.ERROR)
+                vim.api.nvim_echo({ { error } }, true, { err = true })
               end
             end)
           else

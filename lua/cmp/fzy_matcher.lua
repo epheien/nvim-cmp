@@ -91,7 +91,7 @@ M._match = function(input, word, option)
   local score = M.score(input, word)
   local positions = fzy.positions(input, word)
   if #input < #positions then
-    vim.notify(vim.fn.printf('fzy match error: %d (%s) != %d (%s)', #input, input, #positions, vim.inspect(positions)), vim.log.ERROR)
+    vim.api.nvim_echo({ { string.format('fzy match error: %d (%s) != %d (%s)', #input, input, #positions, vim.inspect(positions)) } }, true, { err = true })
     return 0, {}
   end
   return score, M.to_matches_table(positions)
