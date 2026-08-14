@@ -63,6 +63,9 @@ return function()
       disallow_prefix_unmatching = false,
       disallow_symbol_nonprefix_matching = true,
     },
+    matcher = {
+      name = 'default',
+    },
 
     sorting = {
       priority_weight = 2,

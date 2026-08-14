@@ -6,6 +6,7 @@ local snippet = require('cmp.utils.snippet')
 local config = require('cmp.config')
 local types = require('cmp.types')
 local matcher = require('cmp.matcher')
+local fzy_matcher = require('cmp.fzy_matcher')
 local ok, lspkind = pcall(require, 'lspkind')
 
 local function get_icon(kind)
@@ -24,6 +25,7 @@ end
 ---@field public score integer
 ---@field public exact boolean
 ---@field public matches table
+---@field public matcher cmp.matcher|cmp.fzy_matcher
 ---@field public context cmp.Context
 ---@field public source cmp.Source
 ---@field public source_offset integer
@@ -58,6 +60,7 @@ entry.new = function(ctx, source, completion_item, item_defaults)
   self.score = 0
   self.exact = false
   self.matches = {}
+  self.matcher = config.get().matcher.name == 'default' and matcher or fzy_matcher
   self.context = ctx
   self.source = source
   self.offset = source.request_offset
@@ -446,7 +449,7 @@ entry._match = function(self, input, matching_config)
 
   filter_text = self.filter_text
   checked[filter_text] = true
-  score, matches = matcher.match(input, filter_text, option)
+  score, matches = self.matcher.match(input, filter_text, option)
 
   -- Support the language server that doesn't respect VSCode's behaviors.
   if score == 0 then
@@ -461,7 +464,7 @@ entry._match = function(self, input, matching_config)
           filter_text = prefix .. filter_text
           if not checked[filter_text] then
             checked[filter_text] = true
-            score, matches = matcher.match(input, filter_text, option)
+            score, matches = self.matcher.match(input, filter_text, option)
           end
         end
       end
@@ -493,7 +496,7 @@ entry.get_view_matches = function(self, view)
     if diff > 0 then
       input = input:sub(1 + diff)
     end
-    local _, matches = matcher.match(input, view, self.match_view_args_ret.option)
+    local _, matches = self.matcher.match(input, view, self.match_view_args_ret.option)
     self.match_view_args_ret.matches = matches
     return matches
   end
