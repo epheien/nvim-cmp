@@ -69,6 +69,14 @@ M.match = function(input, word, option)
     return 0, {}
   end
 
+  -- Supported options:
+  --  - disallow_prefix_unmatching: reject when first char of input doesn't match first char of word
+  --  - disallow_fullfuzzy_matching: reject all matches (fzy is fully fuzzy, no non-fuzzy path)
+  -- NOTE: other `matching.disallow_*` options (disallow_fuzzy_matching,
+  -- disallow_partial_fuzzy_matching, disallow_partial_matching,
+  -- disallow_symbol_nonprefix_matching) are intentionally NOT supported:
+  -- fzy always matches in a fully-fuzzy manner, so these options are ignored.
+
   -- Check prefix matching.
   if option.disallow_prefix_unmatching then
     if not char.match(string.byte(input, 1), string.byte(word, 1)) then
@@ -82,19 +90,17 @@ end
 ---Match entry
 ---@param input string
 ---@param word string
----@param option? { synonyms: string[], disallow_fullfuzzy_matching: boolean, disallow_fuzzy_matching: boolean, disallow_partial_fuzzy_matching: boolean, disallow_partial_matching: boolean, disallow_prefix_unmatching: boolean, disallow_symbol_nonprefix_matching: boolean }
+---@param option? { disallow_prefix_unmatching: boolean, disallow_fullfuzzy_matching: boolean }
 ---@return integer, table
 M._match = function(input, word, option)
   if option and option.disallow_fullfuzzy_matching then
     return 0, {}
   end
   local score = M.score(input, word)
-  local positions = fzy.positions(input, word)
-  if #input < #positions then
-    vim.notify(string.format('fzy match error: %d (%s) != %d (%s)',
-      #input, input, #positions, vim.inspect(positions)), vim.log.levels.ERROR)
+  if score == 0 then
     return 0, {}
   end
+  local positions = fzy.positions(input, word)
   return score, M.to_matches_table(positions)
 end
 
